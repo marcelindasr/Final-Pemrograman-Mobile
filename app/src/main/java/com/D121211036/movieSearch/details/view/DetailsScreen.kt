@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -46,7 +47,7 @@ import com.D121211036.movieSearch.listMovie.data.remote.ApiMovie
 import com.D121211036.movieSearch.listMovie.util.RatingBar
 
 @Composable
-fun DetailsScreen(backStackEntry: NavBackStackEntry) {
+fun DetailsScreen(navController: NavHostController) {
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
 
@@ -72,7 +73,7 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
         // IconButton sebagai tombol kembali
         IconButton(
             onClick = {
-                backStackEntry
+                navController.popBackStack()
             },
             modifier = Modifier
                 .padding(16.dp)
