@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -48,29 +50,35 @@ fun Beranda(navController: NavHostController) {
     val listMovieState = listMovieViewModel.listMovieState.collectAsState().value
     val bottomNavController = rememberNavController()
 
-    Scaffold(bottomBar = {
-        BottomNavigationBar(
-            bottomNavController = bottomNavController, onEvent = listMovieViewModel::onEvent
-        )
-    }, topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = if (listMovieState.isCurrentPopularScreen)
-                        stringResource(R.string.popular_movies)
-                    else
-                        stringResource(R.string.upcoming_movies),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            modifier = Modifier.shadow(2.dp),
-            colors = TopAppBarDefaults.smallTopAppBarColors(
-                MaterialTheme.colorScheme.inverseOnSurface
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(
+                bottomNavController = bottomNavController,
+                onEvent = listMovieViewModel::onEvent
             )
-
-        )
-    }) {
+        },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = if (listMovieState.isCurrentPopularScreen)
+                            stringResource(R.string.popular_movies)
+                        else
+                            stringResource(R.string.upcoming_movies),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                actions = {
+                    SearchIcon() // Include the search icon in the top-right corner
+                },
+                modifier = Modifier.shadow(2.dp),
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    MaterialTheme.colorScheme.inverseOnSurface
+                )
+            )
+        }
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,16 +96,15 @@ fun Beranda(navController: NavHostController) {
                     )
                 }
                 composable(Screen.UpcomingMovieList.rout) {
-                      UpcomingMovieScreen(
-                          navController = navController,
-                          listMovieState = listMovieState,
-                          onEvent = listMovieViewModel::onEvent
-                      )
+                    UpcomingMovieScreen(
+                        navController = navController,
+                        listMovieState = listMovieState,
+                        onEvent = listMovieViewModel::onEvent
+                    )
                 }
             }
         }
     }
-
 }
 
 
@@ -161,4 +168,17 @@ data class BottomItem(
     val title: String, val icon: ImageVector
 )
 
+@Composable
+fun SearchIcon() {
+    IconButton(
+        onClick = {
 
+        }
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Search, // Replace with your search icon
+            contentDescription = "Search",
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+    }
+}

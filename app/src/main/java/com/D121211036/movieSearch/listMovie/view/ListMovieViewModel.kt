@@ -69,14 +69,14 @@ class ListMovieViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         result.data?.let{
-                            popularList ->
-                                _listMovieState.update {
-                                    it.copy(
-                                        popularListMovie = listMovieState.value.popularListMovie
+                                popularList ->
+                            _listMovieState.update {
+                                it.copy(
+                                    popularListMovie = listMovieState.value.popularListMovie
                                             + popularList,
-                                        popularListMoviePage = listMovieState.value.popularListMoviePage+1
-                                    )
-                                }
+                                    popularListMoviePage = listMovieState.value.popularListMoviePage+1
+                                )
+                            }
                         }
                     }
                 }
@@ -123,5 +123,4 @@ class ListMovieViewModel @Inject constructor(
             }
         }
     }
-
 }
