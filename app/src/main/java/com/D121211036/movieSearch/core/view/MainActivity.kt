@@ -49,8 +49,8 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.IntType
                                 }
                             )
-                            ){ backStackEntry ->
-                                DetailsScreen(backStackEntry)
+                            ){
+                                DetailsScreen(navController)
 
                         }
                     }
