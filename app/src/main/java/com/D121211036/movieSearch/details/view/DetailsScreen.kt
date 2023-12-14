@@ -17,8 +17,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ImageNotSupported
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,10 +47,8 @@ import com.D121211036.movieSearch.listMovie.util.RatingBar
 
 @Composable
 fun DetailsScreen(backStackEntry: NavBackStackEntry) {
-
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
-
 
     val backDropImageState = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -69,7 +69,32 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        if (backDropImageState is AsyncImagePainter.State.Error) {
+        // IconButton sebagai tombol kembali
+        IconButton(
+            onClick = {
+                backStackEntry
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.Start)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = "Back"
+            )
+        }
+
+        // Gambar backdrop atau placeholder jika gagal
+        if (backDropImageState is AsyncImagePainter.State.Success) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                painter = backDropImageState.painter,
+                contentDescription = detailsState.movie?.title,
+                contentScale = ContentScale.Crop
+            )
+        } else {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -85,58 +110,50 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
             }
         }
 
-        if (backDropImageState is AsyncImagePainter.State.Success) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                painter = backDropImageState.painter,
-                contentDescription = detailsState.movie?.title,
-                contentScale = ContentScale.Crop
-            )
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Box(
+        // Informasi film
+        detailsState.movie?.let { movie ->
+            Row(
                 modifier = Modifier
-                    .width(160.dp)
-                    .height(240.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                if (posterImageState is AsyncImagePainter.State.Error) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(70.dp),
-                            imageVector = Icons.Rounded.ImageNotSupported,
-                            contentDescription = detailsState.movie?.title
+                // Poster
+                Box(
+                    modifier = Modifier
+                        .width(160.dp)
+                        .height(240.dp)
+                ) {
+                    if (posterImageState is AsyncImagePainter.State.Error) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(70.dp),
+                                imageVector = Icons.Rounded.ImageNotSupported,
+                                contentDescription = detailsState.movie?.title
+                            )
+                        }
+                    }
+
+                    if (posterImageState is AsyncImagePainter.State.Success) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp)),
+                            painter = posterImageState.painter,
+                            contentDescription = detailsState.movie?.title,
+                            contentScale = ContentScale.Crop
                         )
                     }
                 }
 
-                if (posterImageState is AsyncImagePainter.State.Success) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp)),
-                        painter = posterImageState.painter,
-                        contentDescription = detailsState.movie?.title,
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            detailsState.movie?.let { movie ->
+                // Detail informasi film
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -150,8 +167,7 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
-                        modifier = Modifier
-                            .padding(start = 16.dp)
+                        modifier = Modifier.padding(start = 16.dp)
                     ) {
                         RatingBar(
                             starsModifier = Modifier.size(18.dp),
@@ -189,6 +205,7 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Text overview
         Text(
             modifier = Modifier.padding(start = 16.dp),
             text = stringResource(R.string.overview),
@@ -198,6 +215,7 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Overview film
         detailsState.movie?.let {
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 10.dp),
@@ -207,8 +225,6 @@ fun DetailsScreen(backStackEntry: NavBackStackEntry) {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-
-
     }
-
 }
+
