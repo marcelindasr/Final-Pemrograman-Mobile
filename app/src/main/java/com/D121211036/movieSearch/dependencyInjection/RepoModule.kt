@@ -1,0 +1,22 @@
+package com.D121211036.movieSearch.dependencyInjection
+
+import com.D121211036.movieSearch.listMovie.data.repo.ListMovieRepoImp
+import com.D121211036.movieSearch.listMovie.domain.repository.listMovieRepo
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepoModule {
+
+    @Binds
+    @Singleton
+
+    abstract fun bindListMovieRepo(
+        listMovieRepoImp: ListMovieRepoImp
+    ): listMovieRepo
+
+}
